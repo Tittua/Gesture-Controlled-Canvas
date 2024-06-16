@@ -13,12 +13,12 @@ screen_width, screen_height = pyautogui.size()
 
 import textwrap
 
-def draw_text(canvas, text, position, fontFace=cv2.FONT_HERSHEY_DUPLEX, font_scale=1, color=(0, 128, 0), thickness=2, line_height=30, max_width=50):
+def draw_text(canvas, text, position, fontFace=cv2.FONT_HERSHEY_COMPLEX_SMALL, font_scale=1, color=(0, 128, 0), thickness=2, line_height=30, max_width=50):
 
     x, y = position
 
     # Wrap the text into lines
-    wrapped_text = textwrap.wrap(text, width=max_width)
+    wrapped_text = textwrap.wrap(text, width=15)
 
     # Draw each line on the canvas
     for line in wrapped_text:
@@ -33,11 +33,11 @@ ix, iy = -1, -1
 
 
 
-def draw_freehand(x, y, canvas):
+def draw_freehand(x, y, canvas,color,thickness):
     global ix, iy, drawing
 
     if drawing:  # If drawing is active
-        cv2.line(canvas, (ix, iy), (x, y), color=(0, 0, 255), thickness=4)
+        cv2.line(canvas, (ix, iy), (x, y), color=color, thickness=thickness)
     ix, iy = x, y
 
 def hand_callback(hand_landmarks, image_width, image_height, canvas):
@@ -75,14 +75,19 @@ def hand_callback(hand_landmarks, image_width, image_height, canvas):
     canvas_reset=math.dist((x1, y1), (x5, y5))
     trigger_gemini_1=math.dist((x6, y6), (x2, y2))
     trigger_gemini_2=math.dist((x1, y1), (x4, y4))
-    
-    if distance_draw < 35:
+    erase_trigger_1=math.dist((x2, y2), (x5, y5))
+    #calling the loop for drawing 
+    if distance_draw < 30:
         if not drawing:
             drawing = True
             ix, iy = x1, y1  # Reset the starting position
-        draw_freehand(x1, y1, canvas)
+        draw_freehand(x1, y1, canvas,color=(0, 0, 255),thickness=6)
     else:
         drawing = False
+
+    
+   
+
 
     if canvas_reset<15:
         canvas[:,:]=0
